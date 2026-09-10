@@ -6,6 +6,9 @@ as MCP tools unchanged.
 """
 
 from common.llm_client import call_llm
+from common.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 _DECISIONS_SCHEMA = {
     "title": "decisions",
@@ -93,7 +96,9 @@ def extract_decisions(transcript: str) -> list[dict]:
         "note on why the decision was made. If no decisions were made, return an "
         "empty list."
     )
+    logger.info("extract_decisions called input_chars=%d", len(transcript))
     result = call_llm(system_prompt, transcript, json_schema=_DECISIONS_SCHEMA)
+    logger.info("extract_decisions done count=%d", len(result["decisions"]))
     return result["decisions"]
 
 
@@ -112,7 +117,9 @@ def extract_questions(transcript: str) -> list[dict]:
         "shows the question being answered before the conversation moves on, false "
         "if it was left open. If no questions were asked, return an empty list."
     )
+    logger.info("extract_questions called input_chars=%d", len(transcript))
     result = call_llm(system_prompt, transcript, json_schema=_QUESTIONS_SCHEMA)
+    logger.info("extract_questions done count=%d", len(result["questions"]))
     return result["questions"]
 
 
@@ -133,5 +140,7 @@ def detect_agreements(transcript: str) -> list[dict]:
         "agreement between multiple people is explicit in the transcript. If none, "
         "return an empty list."
     )
+    logger.info("detect_agreements called input_chars=%d", len(transcript))
     result = call_llm(system_prompt, transcript, json_schema=_AGREEMENTS_SCHEMA)
+    logger.info("detect_agreements done count=%d", len(result["agreements"]))
     return result["agreements"]

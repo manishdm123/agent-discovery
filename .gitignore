@@ -11,3 +11,4 @@ wheels/
 
 # Environment variables / secrets
 .env
+agents/transcript_cleaner/.adk/session.db

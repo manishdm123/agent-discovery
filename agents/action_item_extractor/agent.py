@@ -1,11 +1,13 @@
 from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
 
+from common.llm_client import get_model_name
+
 from . import tools
 
 root_agent = Agent(
     name="action_item_extractor",
-    model=LiteLlm(model="openai/gpt-4o-mini"),
+    model=LiteLlm(model=f"openai/{get_model_name()}"),
     description=(
         "Extracts action items from a meeting transcript, along with their "
         "owner and deadline."

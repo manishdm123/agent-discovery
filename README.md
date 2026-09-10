@@ -45,6 +45,13 @@ reference) `data/sample_transcript.txt` and ask it to do its job, e.g.:
 
 > Clean up this transcript: <paste contents of data/sample_transcript.txt>
 
+For a quick one-shot run instead of an interactive chat, pass the message as
+a second argument:
+
+```bash
+uv run adk run --in_memory agents/transcript_cleaner "Clean up this transcript: $(cat data/sample_transcript.txt)"
+```
+
 You can also call a tool function directly for a quick sanity check without
 going through the chat loop:
 
@@ -54,3 +61,18 @@ from agents.transcript_cleaner.tools import clean_transcript
 print(clean_transcript(open('data/sample_transcript.txt').read()))
 "
 ```
+
+## Logging
+
+Every tool call and LLM request is logged (`common/logging_config.py`) in
+`<time> - <loglevel> - <filename> - <message>` format, printed straight to
+the console. Level is controlled by `LOG_LEVEL` in `.env` (default `INFO`).
+This works the same whether you're running standalone or via `adk run` —
+logging attaches its own console handler rather than relying on
+`logging.basicConfig()`, which would otherwise get silently ignored since
+`adk` configures the root logger first.
+
+`adk run` additionally writes everything (its own logs plus ours, since ours
+still propagate up) to a per-run log file — path printed at startup
+(`Log setup complete: ...`), also reachable via `tail -F` on the
+`agent.latest.log` pointer in the same directory.

@@ -6,6 +6,9 @@ can later be wrapped as MCP tools unchanged.
 """
 
 from common.llm_client import call_llm
+from common.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 _BASE_RULES = (
     "You clean up noisy, auto-generated speaker-diarized meeting transcripts. "
@@ -38,7 +41,10 @@ def clean_transcript(transcript: str) -> str:
         "(e.g. 'Speaker 1', 'Speaker 2', or resolved names if the transcript makes them "
         "clear)."
     )
-    return call_llm(system_prompt, transcript)
+    logger.info("clean_transcript called input_chars=%d", len(transcript))
+    result = call_llm(system_prompt, transcript)
+    logger.info("clean_transcript done output_chars=%d", len(result))
+    return result
 
 
 def fix_diarization(transcript: str) -> str:
@@ -57,7 +63,10 @@ def fix_diarization(transcript: str) -> str:
         "speaker when context makes the correct speaker obvious. Do not remove "
         "disfluencies or otherwise rewrite the wording."
     )
-    return call_llm(system_prompt, transcript)
+    logger.info("fix_diarization called input_chars=%d", len(transcript))
+    result = call_llm(system_prompt, transcript)
+    logger.info("fix_diarization done output_chars=%d", len(result))
+    return result
 
 
 def remove_disfluencies(transcript: str) -> str:
@@ -75,7 +84,10 @@ def remove_disfluencies(transcript: str) -> str:
         "starts, and stutters. Do not change speaker attribution or wording beyond "
         "removing these disfluencies."
     )
-    return call_llm(system_prompt, transcript)
+    logger.info("remove_disfluencies called input_chars=%d", len(transcript))
+    result = call_llm(system_prompt, transcript)
+    logger.info("remove_disfluencies done output_chars=%d", len(result))
+    return result
 
 
 def normalize_speakers(transcript: str) -> str:
@@ -94,4 +106,7 @@ def normalize_speakers(transcript: str) -> str:
         "them clear). Do not change wording, disfluencies, or speaker turn "
         "boundaries."
     )
-    return call_llm(system_prompt, transcript)
+    logger.info("normalize_speakers called input_chars=%d", len(transcript))
+    result = call_llm(system_prompt, transcript)
+    logger.info("normalize_speakers done output_chars=%d", len(result))
+    return result

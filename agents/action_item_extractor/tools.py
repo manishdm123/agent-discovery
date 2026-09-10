@@ -6,6 +6,9 @@ dependency, so these can later be wrapped as MCP tools unchanged.
 """
 
 from common.llm_client import call_llm
+from common.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 _ACTION_ITEMS_SCHEMA = {
     "title": "action_items",
@@ -65,7 +68,9 @@ def extract_action_items(transcript: str) -> list[dict]:
         "deadline that isn't supported by the transcript. If there are no action "
         "items, return an empty list."
     )
+    logger.info("extract_action_items called input_chars=%d", len(transcript))
     result = call_llm(system_prompt, transcript, json_schema=_ACTION_ITEMS_SCHEMA)
+    logger.info("extract_action_items done count=%d", len(result["action_items"]))
     return result["action_items"]
 
 
@@ -88,7 +93,9 @@ def identify_owner(action_item: str, transcript: str) -> str | None:
         "owner clear — do not guess."
     )
     user_content = f"Action item: {action_item}\n\nTranscript:\n{transcript}"
+    logger.info("identify_owner called action_item=%r", action_item)
     result = call_llm(system_prompt, user_content, json_schema=_OWNER_SCHEMA)
+    logger.info("identify_owner done owner=%r", result["owner"])
     return result["owner"]
 
 
@@ -112,5 +119,7 @@ def identify_deadline(action_item: str, transcript: str) -> str | None:
         "deadline — do not guess."
     )
     user_content = f"Action item: {action_item}\n\nTranscript:\n{transcript}"
+    logger.info("identify_deadline called action_item=%r", action_item)
     result = call_llm(system_prompt, user_content, json_schema=_DEADLINE_SCHEMA)
+    logger.info("identify_deadline done deadline=%r", result["deadline"])
     return result["deadline"]

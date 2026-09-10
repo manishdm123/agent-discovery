@@ -1,11 +1,13 @@
 from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
 
+from common.llm_client import get_model_name
+
 from . import tools
 
 root_agent = Agent(
     name="transcript_cleaner",
-    model=LiteLlm(model="openai/gpt-4o-mini"),
+    model=LiteLlm(model=f"openai/{get_model_name()}"),
     description=(
         "Cleans noisy, speaker-diarized meeting transcripts: fixes diarization "
         "errors, removes disfluencies, and normalizes speaker labels."
