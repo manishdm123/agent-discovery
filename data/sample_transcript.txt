@@ -1,0 +1,11 @@
+Speaker 1: okay so, um, let's get started. Speaker 1: I think we should, uh, we should just go with the postgres option instead of the the the document store.
+Speaker 2: yeah agreed, postgres makes more sense given our team's experience.
+Speaker 1: cool. Speaker 3: wait sorry can I ask, uh, who's going to handle the migration script?
+Speaker 2: I can take that. I'll have it done by, um, end of day Friday.
+Speaker 1: great. Speaker 3: and what about the rollback plan, do we have one?
+Speaker 1: hmm good question, we don't have one yet.
+Speaker 2: I think Speaker 3 should probably write that up since you flagged it.
+Speaker 3: yeah okay, I can, I can draft the rollback plan, I'll get it to you all by next Wednesday.
+Speaker 1: perfect, so to confirm, we're locking in postgres, Speaker 2 handles the migration script by Friday, and Speaker 3 drafts the rollback plan by next Wednesday.
+Speaker 2: sounds good to me.
+Speaker 3: agreed.
