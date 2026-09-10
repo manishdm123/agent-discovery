@@ -4,10 +4,11 @@ POC for an agent registry: agents register their capabilities, and an
 orchestrator dynamically discovers and calls the right agent for a given
 use case instead of hardcoding which agent handles what.
 
-This repo currently implements the first slice of that: three standalone
-[Google ADK](https://adk.dev/) agents that process noisy, speaker-diarized
-meeting transcripts. Registry registration and the orchestrator (see
-`registry/` and `orchestrator/`) are follow-up work.
+This repo currently implements: three [Google ADK](https://adk.dev/) agents
+that process noisy, speaker-diarized meeting transcripts, each also servable
+over [A2A](https://a2a.dev/); and two orchestrators that compose them (one
+in-process, one over A2A). Registry registration (see `registry/`) — so
+agents are *discovered* rather than hardcoded — is the remaining step.
 
 ## Agents
 
@@ -61,6 +62,28 @@ from agents.transcript_cleaner.tools import clean_transcript
 print(clean_transcript(open('data/sample_transcript.txt').read()))
 "
 ```
+
+## Orchestrators
+
+`orchestrator/local_orchestrator` and `orchestrator/a2a_orchestrator` each
+compose all three agents into one — see `orchestrator/README.md` for how
+they differ and how to run each (the A2A one needs the three agents' A2A
+servers running first, see below).
+
+## Running an agent over A2A
+
+Each agent can also be served over HTTP via [A2A](https://a2a.dev/) instead
+of the ADK CLI, using `google.adk.a2a.utils.agent_to_a2a.to_a2a` (see each
+agent's `a2a_server.py`):
+
+```bash
+uv run uvicorn agents.transcript_cleaner.a2a_server:a2a_app --port 8001
+uv run uvicorn agents.decision_extractor.a2a_server:a2a_app --port 8002
+uv run uvicorn agents.action_item_extractor.a2a_server:a2a_app --port 8003
+```
+
+Each serves its auto-generated agent card at `/.well-known/agent-card.json`,
+e.g. `curl http://localhost:8001/.well-known/agent-card.json`.
 
 ## Logging
 

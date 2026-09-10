@@ -1,19 +1,19 @@
 # Registry integration (not yet implemented)
 
-This will hold the glue for registering the three agents in `agents/` with
-[mcp-gateway-registry](https://github.com/agentic-community/mcp-gateway-registry)
-so the orchestrator can discover them dynamically instead of hardcoding
-endpoints.
+This will hold the glue for registering the three A2A agents (`agents/*/a2a_server.py`)
+with [mcp-gateway-registry](https://github.com/agentic-community/mcp-gateway-registry)
+so `orchestrator/a2a_orchestrator` can discover them dynamically instead of
+hardcoding `localhost:8001/8002/8003`.
 
 Planned shape:
-- A thin FastMCP server per agent (or one server exposing all three
-  namespaced) that imports the existing `agents/*/tools.py` functions
-  unchanged and exposes them as MCP tools. The tool logic already lives in
-  plain, ADK-independent functions specifically so this wrapper stays thin.
-- A registration script that calls the registry's `POST /api/servers/register`
-  (or the equivalent CLI/UI flow) for each MCP server, with a description rich
-  enough for the registry's semantic search / `intelligent_tool_finder` to
-  match it correctly.
+- A registration script that, for each agent, fetches its live agent card
+  (`GET http://localhost:800X/.well-known/agent-card.json`) and posts it to
+  the registry's `POST /api/agents/register`. No new agent-side code needed —
+  `to_a2a()` already generates the card from the existing `root_agent`.
+- Swap `orchestrator/a2a_orchestrator`'s hardcoded `RemoteA2aAgent` URLs for a
+  runtime call to `POST /api/agents/discover/semantic` (natural-language
+  query per capability needed), using whatever URL the registry returns.
 - Requires running the registry itself locally (docker compose — Keycloak,
-  MongoDB, nginx gateway, registry API). Out of scope for this repo until
-  that infra work is explicitly taken on.
+  MongoDB, nginx gateway, registry API). Auth mode (static API token vs.
+  Keycloak client-credentials JWT) still to be decided. Out of scope for this
+  repo until that infra work is explicitly taken on.

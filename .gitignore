@@ -11,4 +11,6 @@ wheels/
 
 # Environment variables / secrets
 .env
-agents/transcript_cleaner/.adk/session.db
+
+# ADK local session/artifact storage (created per agent folder by `adk run`)
+**/.adk/
